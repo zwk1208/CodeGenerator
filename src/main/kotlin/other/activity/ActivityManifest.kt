@@ -1,6 +1,5 @@
 package other.activity
 
-import com.android.tools.idea.wizard.template.ModuleTemplateData
 import other.ArmsPluginTemplateProviderImpl
 
 /**

@@ -1,6 +1,5 @@
 package other.activity
 
-import other.ArmsPluginTemplateProviderImpl
 
 /**
  *
