@@ -10,7 +10,7 @@ import java.io.File
  * module name is ArmsPluginTemplateProviderImpl
  */
 class ArmsPluginTemplateProviderImpl : WizardTemplateProvider() {
-    override fun getTemplates(): List<Template> = listOf(armsTemplate)
+    override fun getTemplates(): List<Template> = listOf(baseActivityTemplate,armsTemplate)
 
 
     private val MIN_API = 16
@@ -209,4 +209,31 @@ class ArmsPluginTemplateProviderImpl : WizardTemplateProvider() {
         visible = { needDagger.value }
         help = "Moudle 将被输出到此包下,请认真核实此包名是否是你需要输出的目标包名"
     }
+
+
+    private val baseActivityTemplate: Template
+        get() = template {
+            //revision = 2
+            name = "Olamet BaseActivity"
+            description = "一键创建 BaseActivity 单个页面所需要的全部组件"
+            minApi = MIN_API
+            //minBuildApi = MIN_API
+            category = Category.Activity
+            formFactor = FormFactor.Mobile
+            screens = listOf(WizardUiContext.ActivityGallery, WizardUiContext.MenuEntry, WizardUiContext.NewProject, WizardUiContext.NewModule)
+            thumb { File("template_blank_activity.png") }
+
+            widgets(
+                TextFieldWidget(pageName),
+                PackageNameWidget(appPackageName),
+                CheckBoxWidget(generateActivityLayout),
+                LanguageWidget()
+            )
+
+            //创建所需文件
+            recipe = { te ->
+                //val (projectData, srcOut, resOut) = te as ModuleTemplateData
+                baseActivityRecipe(this@ArmsPluginTemplateProviderImpl, (te as ModuleTemplateData))
+            }
+        }
 }

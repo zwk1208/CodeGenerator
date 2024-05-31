@@ -3,6 +3,9 @@ package other
 import com.android.tools.idea.wizard.template.Language
 import com.android.tools.idea.wizard.template.ModuleTemplateData
 import com.android.tools.idea.wizard.template.RecipeExecutor
+import other.activity.base.baseActivity
+import other.activity.baseActivityLayout
+import other.activity.baseActivityManifest
 import other.res.layout.simpleLayout
 import other.src.app_package.*
 import other.src.armsManifest
@@ -58,4 +61,23 @@ fun RecipeExecutor.armsRecipe(provider: ArmsPluginTemplateProviderImpl, data: Mo
 
 fun fFmSlashedPackageName(oVar: String): String {
     return "src/main/java/${oVar.replace('.', '/')}"
+}
+
+fun RecipeExecutor.baseActivityRecipe(providerImpl: ArmsPluginTemplateProviderImpl, data: ModuleTemplateData) {
+
+    //生成activity的AndroidManifest
+    mergeXml(baseActivityManifest(providerImpl), File(data.manifestDir, "AndroidManifest.xml"))
+
+
+    //生成activity的布局文件
+    if (providerImpl.generateActivityLayout.value) {
+        save(baseActivityLayout(), File(data.resDir, "layout/activity_${providerImpl.pageName.value[0].lowercaseChar()}${providerImpl.pageName.value.substring(1, providerImpl.pageName. value.length)}.xml"))
+    }
+
+    //生成activity的文件
+    val languageSuffix = if (data.projectTemplateData.language == Language.Java) "java" else "kt"
+    val activityFile = File(data.rootDir, "${fFmSlashedPackageName(providerImpl.activityPackageName.value)}/${providerImpl.pageName.value}Activity.$languageSuffix")
+    save(baseActivity(data.projectTemplateData.language == Language.Kotlin, providerImpl), activityFile)
+    open(activityFile)
+
 }
